@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">hambugi</string>
+=======
+    <string name="app_name">Hambugi</string>
+>>>>>>> 5af3f5550b98b96ef815831e9f3adfc9d77f912b
 </resources>

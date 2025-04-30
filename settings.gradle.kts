@@ -19,6 +19,11 @@ dependencyResolutionManagement {
     }
 }
 
+<<<<<<< HEAD
 rootProject.name = "hambugi"
 include(":app")
  
+=======
+rootProject.name = "Hambugi"
+include(":app")
+>>>>>>> 5af3f5550b98b96ef815831e9f3adfc9d77f912b
