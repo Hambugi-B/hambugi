@@ -3,4 +3,8 @@
     <string name="login">Log In</string>
     <string name="signup">Sign Up</string>
     <string name="exit">Exit</string>
+    <string name="new_start">Start New Game</string>
+    <string name="load">Load Game</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
