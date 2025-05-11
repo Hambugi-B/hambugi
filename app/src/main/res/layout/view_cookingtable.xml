@@ -1,6 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/cookingtable_background">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 상단 메뉴바 -->
+    <LinearLayout
+        android:id="@+id/layout_menubar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- 게임 내 시간(일정 시간 도달 시 게임 오버) -->
+        <TextView
+            android:id="@+id/txt_menubar_time"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="30dp"
+            android:text="00 : 00"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+
+        <!-- 돈(햄버거 완성 시 재료 비용에 비례해 업데이트) -->
+        <TextView
+            android:id="@+id/txt_menubar_gold"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="G: 100"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+
+        <!-- 메뉴 버튼(클릭 시 일시 정지 후 메뉴 출력) -->
+        <Button
+            android:id="@+id/btn_menubar_menu"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="30dp"
+            android:text="="/>
+    </LinearLayout>
+
+    <!-- 재료 테이블(3개 linear layout으로 구성)
+     이 부분은 더 효율적인 부분이 있으면 개발 필요 -->
+    <LinearLayout
+        android:id="@+id/layout_ingredient1"
+        android:layout_width="150dp"
+        android:layout_height="58dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="270dp"
+        android:layout_marginLeft="34dp"
+        android:layout_below="@+id/layout_menubar">
+
+        <Button
+            android:id="@+id/btn_ingredient_1"
+            android:layout_width="68dp"
+            android:layout_height="58dp"/>
+
+        <Button
+            android:id="@+id/btn_ingredient_2"
+            android:layout_width="68dp"
+            android:layout_height="58dp"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_ingredient2"
+        android:layout_width="150dp"
+        android:layout_height="58dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="330dp"
+        android:layout_marginLeft="29dp"
+        android:layout_below="@+id/layout_menubar">
+
+        <Button
+            android:id="@+id/btn_ingredient_3"
+            android:layout_width="69dp"
+            android:layout_height="58dp"/>
+
+        <Button
+            android:id="@+id/btn_ingredient_4"
+            android:layout_width="70dp"
+            android:layout_height="58dp"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_ingredient3"
+        android:layout_width="155dp"
+        android:layout_height="58dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="390dp"
+        android:layout_marginLeft="23dp"
+        android:layout_below="@+id/layout_menubar">
+
+        <Button
+            android:id="@+id/btn_ingredient_5"
+            android:layout_width="72dp"
+            android:layout_height="58dp"/>
+
+        <Button
+            android:id="@+id/btn_ingredient_6"
+            android:layout_width="73dp"
+            android:layout_height="58dp"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
+
+    <!-- 햄버거 이미지(재료 클릭 시 마다 이미지 변경)
+      ex) 재료 별 이미지 생성 후 각 재료가 포함 될 때마다 알맞은 이미지로 변경 -->
+    <ImageView
+        android:id="@+id/imgview_hamburger"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/layout_menubar"
+        android:layout_marginTop="300dp"
+        android:layout_marginLeft="250dp"/>
+
+    <!-- 햄버거 삭제 및 완성 -->
+    <LinearLayout
+        android:id="@+id/layout_active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/imgview_hamburger"
+        android:layout_marginLeft="195dp"
+        android:layout_marginTop="30dp">
+
+        <!-- 햄버거 삭제 버튼(클릭 시 햄버거 이미지 초기화) -->
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="@string/Delete"/>
+
+        <!-- 햄버거 완성 버튼(클릭 시 카운터 화면으로 전환) -->
+        <Button
+            android:id="@+id/btn_complete"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/Complete"
+            android:textSize="12dp"/>
+
+    </LinearLayout>
+
+    <!-- 화면 전환 버튼(클릭 시 쿠킹테이블 -> 카운터) -->
+    <Button
+        android:id="@+id/btn_change_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:text=">>"/>
+</RelativeLayout>

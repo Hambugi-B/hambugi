@@ -9,6 +9,7 @@
 
     <!-- 반투명 카드뷰 -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_login"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -23,6 +24,7 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
+            <!-- 로그인 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
 
+            <!-- ID 입력 -->
             <EditText
                 android:id="@+id/edit_id"
                 android:layout_width="match_parent"
@@ -43,6 +46,7 @@
                 android:textColorHint="#CCCCCC"
                 android:inputType="text" />
 
+            <!-- PW 입력 -->
             <EditText
                 android:id="@+id/edit_pw"
                 android:layout_width="match_parent"
@@ -50,19 +54,22 @@
                 android:hint="Password"
                 android:background="@drawable/input_bg"
                 android:padding="12dp"
+                android:layout_marginBottom="10dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#CCCCCC"
                 android:inputType="textPassword"
                 android:layout_marginTop="12dp" />
 
-            <Button
-                android:id="@+id/btn_login"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Log In"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="24dp"/>
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- Log in 버튼 (클릭 시 DB 체크 후 available하면 start 화면으로 전환, 실패 시 오류 창 출력) -->
+    <ImageButton
+        android:id="@+id/btn_login"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/card_login"
+        android:background="@drawable/login_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"/>
 </RelativeLayout>
