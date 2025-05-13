@@ -37,6 +37,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".LogIn"/>
+        <activity android:name=".SignUp"/>
+        <activity android:name=".Start"/>
+        <activity android:name=".Counter"/>
+        <activity android:name=".CookingTable"/>
+        <activity android:name=".EndDay"/>
     </application>
 
 </manifest>

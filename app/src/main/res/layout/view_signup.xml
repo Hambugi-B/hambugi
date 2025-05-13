@@ -9,6 +9,7 @@
 
     <!-- 반투명 카드뷰 -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_signup"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -23,6 +24,7 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
+            <!-- 회원가입 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
 
+            <!-- 이름 입력 -->
             <EditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
@@ -57,7 +60,7 @@
                 android:inputType="textEmailAddress"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- ID + 중복확인 버튼 -->
+            <!-- ID + 중복 확인 버튼 레이아웃 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -65,6 +68,7 @@
                 android:layout_marginBottom="12dp"
                 android:gravity="center_vertical">
 
+                <!-- ID 입력 -->
                 <EditText
                     android:id="@+id/et_id"
                     android:layout_width="0dp"
@@ -77,6 +81,7 @@
                     android:textColorHint="#666666"
                     android:inputType="text"/>
 
+                <!-- ID 중복 버튼 (클릭 시 DB체크하여 중복 확인) -->
                 <Button
                     android:id="@+id/btn_check_duplicate"
                     android:layout_width="0dp"
@@ -101,13 +106,16 @@
                 android:inputType="textPassword"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- 회원가입 버튼 -->
-            <Button
-                android:id="@+id/btn_signup"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Sign Up"/>
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <!-- 회원가입 버튼 (클릭 시 main화면 전환) -->
+    <ImageButton
+        android:id="@+id/btn_signup"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/card_signup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/signin_button"/>
 </RelativeLayout>
