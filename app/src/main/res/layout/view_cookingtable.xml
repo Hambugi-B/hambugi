@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/layout_menubar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="#ffffff"
         android:gravity="center"
         android:orientation="horizontal">
@@ -37,13 +37,13 @@
             android:textColor="@color/black"/>
 
         <!-- 메뉴 버튼(클릭 시 일시 정지 후 메뉴 출력) -->
-        <Button
+        <ImageButton
             android:id="@+id/btn_menubar_menu"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="30dp"
-            android:text="="/>
+            android:background="@drawable/menu_button"/>
     </LinearLayout>
 
     <!-- 재료 테이블(3개 linear layout으로 구성)
@@ -130,30 +130,29 @@
         android:layout_marginTop="30dp">
 
         <!-- 햄버거 삭제 버튼(클릭 시 햄버거 이미지 초기화) -->
-        <Button
+        <ImageButton
             android:id="@+id/btn_delete"
             android:layout_width="100dp"
             android:layout_height="60dp"
-            android:text="@string/Delete"/>
+            android:background="@drawable/delete_button"/>
 
         <!-- 햄버거 완성 버튼(클릭 시 카운터 화면으로 전환) -->
-        <Button
+        <ImageButton
             android:id="@+id/btn_complete"
             android:layout_width="100dp"
             android:layout_height="60dp"
             android:layout_marginLeft="10dp"
-            android:text="@string/Complete"
-            android:textSize="12dp"/>
+            android:background="@drawable/complete_button"/>
 
     </LinearLayout>
 
     <!-- 화면 전환 버튼(클릭 시 쿠킹테이블 -> 카운터) -->
-    <Button
+    <ImageButton
         android:id="@+id/btn_change_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
-        android:text=">>"/>
+        android:background="@drawable/change_view_button"/>
 </RelativeLayout>
