@@ -15,8 +15,7 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:background="@drawable/title"
-        android:layout_marginTop="100dp"
-        android:text="@string/app_name" />
+        android:layout_marginTop="100dp"/>
 
     <!-- 새로운 게임 버튼 (클릭 시 카운터 화면으로 전환 + 새로운 DB생성) -->
     <!-- *login 이미지로 임시(수정 필)* -->
@@ -36,7 +35,7 @@
         android:layout_width="170dp"
         android:layout_height="100dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/signin_button"
+        android:background="@drawable/signup_button"
         android:padding="0dp"
         android:layout_gravity="center"/>
 
