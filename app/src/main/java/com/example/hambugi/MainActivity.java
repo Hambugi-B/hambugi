@@ -1,6 +1,9 @@
 package com.example.hambugi;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+    ImageButton btn_login, btn_signup, btn_exit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +23,37 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        btn_login = findViewById(R.id.btn_login);
+        btn_signup = findViewById(R.id.btn_signup);
+        btn_exit = findViewById(R.id.btn_exit);
+
+        // 로그인 버튼 클릭 시 로그인 화면으로 전환
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LogIn.class);
+                startActivity(intent);
+            }
+        });
+
+        // 회원가입 버튼 클릭 시 회원가입 화면으로 전환
+        btn_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SignUp.class);
+                startActivity(intent);
+            }
+        });
+
+
+        // 종료 버튼 클릭 시 종료
+        btn_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
         });
     }
 }
