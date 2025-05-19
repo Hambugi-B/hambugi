@@ -47,6 +47,34 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/layout_customer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="103dp"
+        android:layout_marginLeft="30dp"
+        android:layout_below="@+id/layout_menubar">
+
+        <!-- 손님 이미지 -->
+        <ImageView
+            android:id="@+id/img_customer"
+            android:layout_width="300dp"
+            android:layout_height="350dp"
+            android:background="@drawable/customer"/>
+
+        <!-- 주문 텍스트 -->
+        <TextView
+            android:id="@+id/txt_order"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="125dp"
+            android:layout_marginTop="50dp"
+            android:text="bun > patty > lettuce > bun"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:gravity="center"/>
+    </FrameLayout>
+
     <!-- 화면 전환 버튼(클릭 시 카운터 -> 쿠킹테이블) -->
     <ImageButton
         android:id="@+id/btn_change_view"

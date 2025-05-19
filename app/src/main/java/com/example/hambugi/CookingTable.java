@@ -1,5 +1,6 @@
 package com.example.hambugi;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +11,11 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
-
 
 public class CookingTable extends Activity {
     private TextView txt_menubar_time, txt_menubar_gold;
@@ -23,6 +27,7 @@ public class CookingTable extends Activity {
     private int stackIndex = 0;     // 재료 개수 추적용
     private final int STACK_GAP = -15;   // 재료 겹침 정도
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,37 +43,24 @@ public class CookingTable extends Activity {
 
         context = this;
 
-        findViewById(R.id.btn_ingredient_1).setOnClickListener(v -> addIngredient("bun_top"));
-        findViewById(R.id.btn_ingredient_2).setOnClickListener(v -> addIngredient("patty"));
-        findViewById(R.id.btn_ingredient_3).setOnClickListener(v -> addIngredient("lettuce"));
-        findViewById(R.id.btn_ingredient_4).setOnClickListener(v -> addIngredient("cheese"));
-        findViewById(R.id.btn_ingredient_5).setOnClickListener(v -> addIngredient("tomato"));
-        findViewById(R.id.btn_ingredient_6).setOnClickListener(v -> addIngredient("bun_bottom"));
+        findViewById(R.id.btn_bun_top).setOnClickListener(v -> addIngredient("bun_top"));
+        findViewById(R.id.btn_patty).setOnClickListener(v -> addIngredient("patty"));
+        findViewById(R.id.btn_lettuce).setOnClickListener(v -> addIngredient("lettuce"));
+        findViewById(R.id.btn_cheese).setOnClickListener(v -> addIngredient("cheese"));
+        findViewById(R.id.btn_tomato).setOnClickListener(v -> addIngredient("tomato"));
+        findViewById(R.id.btn_bun_bottom).setOnClickListener(v -> addIngredient("bun_bottom"));
 
         // 화면 전환 버튼 클릭 시
-        btn_change_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CookingTable.this, Counter.class);
-                startActivity(intent);
-            }
+        btn_change_view.setOnClickListener(v -> {
+            Intent intent = new Intent(CookingTable.this, Counter.class);
+            startActivity(intent);
         });
 
         // 햄버거 삭제 버튼 클릭 시
-        btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteBurger();
-            }
-        });
+        btn_delete.setOnClickListener(v -> deleteBurger());
 
         // 햄버거 완성 버튼 클릭 시
-        btn_complete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                completeBurger();
-            }
-        });
+        btn_complete.setOnClickListener(v -> completeBurger());
     }
 
     // 재료 추가하여 이미지 반영하는 함수
@@ -107,7 +99,7 @@ public class CookingTable extends Activity {
         img.setLayoutParams(params);
         img.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-        // 위로 조금씩 이동하면서 겹치게
+        // 위로 조금씩 이동 하면서 겹치게
         img.setTranslationY(stackIndex * STACK_GAP);
         burgerLayout.addView(img);
         stackIndex++;
@@ -122,11 +114,35 @@ public class CookingTable extends Activity {
 
     // 햄버거 완성 시 주문과 비교 및 화면 전환
     private void completeBurger() {
-        // TODO: 주문과 비교하는 로직
+        List<String> madeBurger = new ArrayList<>(burgerStack);
+        List<String> order = GameManager.getInstance().getCurrentOrder();
 
+        if (matchIgnoringOrder(madeBurger, order)) {
+            Toast.makeText(this, "Perfect Order!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Wrong Order!", Toast.LENGTH_SHORT).show();
+        }
+
+        // 성공/실패 상관없이 다음 손님으로 교체
+        GameManager.getInstance().serveCustomer();
 
         deleteBurger();
+
         Intent intent = new Intent(CookingTable.this, Counter.class);
         startActivity(intent);
+        finish();
+    }
+
+    // 햄버거 비교 함수
+    private boolean matchIgnoringOrder(List<String> a, List<String> b){
+        if (a.size() != b.size()) return false;
+
+        for (String item : new HashSet<>(a)) {
+            if (Collections.frequency(a, item) != Collections.frequency(b, item)){
+                return false;
+            }
+        }
+
+        return true;
     }
 }

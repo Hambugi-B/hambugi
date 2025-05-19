@@ -39,15 +39,14 @@
 
         <activity android:name=".Start"/>
 
-        <activity android:name=".Counter"/>
-
-        <activity android:name=".CookingTable"
+        <activity android:name=".Counter"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            </intent-filter></activity>
+
+        <activity android:name=".CookingTable"/>
 
         <activity android:name=".EndDay"/>
 
