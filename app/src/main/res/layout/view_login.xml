@@ -39,7 +39,7 @@
                 android:id="@+id/edit_id"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Username"
+                android:hint="Email Id"
                 android:background="@drawable/input_bg"
                 android:padding="12dp"
                 android:textColor="#FFFFFF"
