@@ -1,69 +1,110 @@
 package com.example.hambugi;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.TextView;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.*;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class Counter extends AppCompatActivity {
+    private TextView txt_menubar_time, txt_menubar_gold, txt_order;
+    private ImageButton btn_change_view, btn_menu;
 
-    private TextView txtMenubarTime;
     private Handler handler = new Handler();
-
-    // 시작 시간: 08:00 (Calendar 객체로 관리)
-    private Calendar virtualTime = Calendar.getInstance();
-
-    // 10초마다 1분씩 증가시키는 Runnable
-    private Runnable virtualClockTask = new Runnable() {
-        @Override
-        public void run() {
-            // 시간 형식: "hh:mm a" (예: 08:05 AM)
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-            String currentTimeStr = sdf.format(virtualTime.getTime());
-
-            // TextView에 시간 표시
-            txtMenubarTime.setText(currentTimeStr + " :");
-
-            // 종료 조건: 오후 5시 (17:00) 이후면 stop
-            int hour = virtualTime.get(Calendar.HOUR_OF_DAY);
-            int minute = virtualTime.get(Calendar.MINUTE);
-            if (hour >= 17 && minute >= 0) {
-                return;
-            }
-
-            // 1분 증가
-            virtualTime.add(Calendar.MINUTE, 1);
-
-            // 10초 후에 다시 실행
-            handler.postDelayed(this, 10000);
-        }
-    };
+    private Runnable customerCheckRunnable;
+    private final int checkInterval = 1000; // 손님 상태 확인 주기: 1초
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_cookingtable);
+        setContentView(R.layout.view_counter);
 
-        txtMenubarTime = findViewById(R.id.txt_menubar_time);
+        txt_menubar_time = findViewById(R.id.txt_menubar_time);
+        txt_menubar_gold = findViewById(R.id.txt_menubar_gold);
+        txt_order = findViewById(R.id.txt_order);
+        btn_change_view = findViewById(R.id.btn_change_view);
+        btn_menu = findViewById(R.id.btn_menubar_menu);
 
-        // 가상 시작 시간: 08:00
-        virtualTime.set(Calendar.HOUR_OF_DAY, 8);
-        virtualTime.set(Calendar.MINUTE, 0);
-        virtualTime.set(Calendar.SECOND, 0);
+        // 햄버거 제작 화면으로 이동
+        btn_change_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Counter.this, CookingTable.class);
+                intent.putStringArrayListExtra("order", new ArrayList<>(GameManager.getInstance().getCurrentOrder()));
+                startActivity(intent);
+            }
+        });
 
-        // 시작
-        handler.post(virtualClockTask);
+        // 손님 상태 주기적으로 확인 (만료 시 새 손님 생성)
+        customerCheckRunnable = new Runnable() {
+            @Override
+            public void run() {
+                GameManager gm = GameManager.getInstance();
+
+                if (gm.isCustomerExpired()) {
+                    Toast.makeText(Counter.this, "Time Over", Toast.LENGTH_SHORT).show();
+                    gm.generateNewOrder();
+                    animateNewCustomer();
+                }
+
+                updateOrderText();
+                handler.postDelayed(this, checkInterval);
+            }
+        };
+
+        // 첫 손님 등장 애니메이션 및 텍스트 표시
+        animateNewCustomer();
+        updateOrderText();
+        handler.postDelayed(customerCheckRunnable, checkInterval);
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         handler.removeCallbacks(virtualClockTask);
     }
 
+
+        handler.removeCallbacks(customerCheckRunnable);
+    }
+
+    // 주문 텍스트를 표시하는 함수
+    private void updateOrderText() {
+        List<String> currentOrder = GameManager.getInstance().getCurrentOrder();
+        String orderText = TextUtils.join(" > ", currentOrder);
+        txt_order.setText(orderText);
+    }
+
+    // 손님 등장 애니메이션 + 텍스트 지연 표시
+    private void animateNewCustomer() {
+        txt_order.setVisibility(View.INVISIBLE);
+
+        ImageView img_customer = findViewById(R.id.img_customer);
+        Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.anim_customer_up);
+        img_customer.startAnimation(slideUp);
+
+        new Handler().postDelayed(() -> {
+            txt_order.setVisibility(View.VISIBLE);
+            Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
+            fadeIn.setDuration(300);
+            txt_order.startAnimation(fadeIn);
+        }, 200);
+    }
 
 }

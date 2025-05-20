@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/end_day_background">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 스테이지 종료 후 화면 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="330dp">
+
+        <!-- 다음 스테이지로 넘어가는 버튼(클릭 시 counter 화면으로 전환) -->
+        <ImageButton
+            android:id="@+id/btn_new_stage"
+            android:layout_width="170dp"
+            android:layout_height="90dp"
+            android:background="@drawable/new_stage_button"/>
+
+        <!-- 상점으로 이동하는 버튼 (클릭 시 store 화면으로 전환) -->
+        <ImageButton
+            android:id="@+id/btn_store"
+            android:layout_width="170dp"
+            android:layout_height="90dp"
+            android:background="@drawable/store_button"
+            android:layout_marginTop="15dp"/>
+
+        <!-- start화면으로 돌아가는 버튼 (클릭 시 main화면으로 전환) -->
+        <ImageButton
+            android:id="@+id/btn_exit"
+            android:layout_width="170dp"
+            android:layout_height="90dp"
+            android:background="@drawable/exit_button"
+            android:layout_marginTop="15dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

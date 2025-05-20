@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class SignUp extends Activity {
     private EditText edit_name, edit_email, edit_id, edit_pw;
-    private Button btn_check_duplicate;
+    private ImageButton btn_check_duplicate;
     private ImageButton btn_signUp;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
