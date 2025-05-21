@@ -1,5 +1,6 @@
 package com.example.hambugi;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -145,4 +146,5 @@ public class CookingTable extends Activity {
 
         return true;
     }
+
 }
