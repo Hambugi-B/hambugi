@@ -18,10 +18,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogIn extends Activity {
+
     private EditText edit_id, edit_pw;
     private ImageButton btn_login;
 
     private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,4 +63,6 @@ public class LogIn extends Activity {
             }
         });
     }
+
+
 }
