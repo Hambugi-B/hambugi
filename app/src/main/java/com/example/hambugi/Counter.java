@@ -70,17 +70,11 @@ public class Counter extends AppCompatActivity {
         animateNewCustomer();
         updateOrderText();
         handler.postDelayed(customerCheckRunnable, checkInterval);
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        handler.removeCallbacks(virtualClockTask);
-    }
-
-
         handler.removeCallbacks(customerCheckRunnable);
     }
 
@@ -106,5 +100,4 @@ public class Counter extends AppCompatActivity {
             txt_order.startAnimation(fadeIn);
         }, 200);
     }
-
 }
