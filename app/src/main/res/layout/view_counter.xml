@@ -53,14 +53,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="103dp"
         android:layout_marginLeft="30dp"
-        android:layout_below="@+id/layout_menubar">
+        android:layout_below="@+id/layout_menubar"
+
+        >
 
         <!-- 손님 이미지 -->
         <ImageView
             android:id="@+id/img_customer"
             android:layout_width="300dp"
             android:layout_height="350dp"
-            android:background="@drawable/customer"/>
+            android:background="@drawable/customer"
+            />
 
         <!-- 주문 텍스트 -->
         <TextView
