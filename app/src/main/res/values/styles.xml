@@ -8,4 +8,12 @@
         <item name="android:background">@color/black_overlay</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
+
+    <style name="NoTintButton" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorButtonNormal">@android:color/transparent</item>
+        <item name="colorControlHighlight">@android:color/transparent</item>
+        <item name="colorControlActivated">@android:color/transparent</item>
+        <item name="android:backgroundTint">@null</item>
+    </style>
+
 </resources>
