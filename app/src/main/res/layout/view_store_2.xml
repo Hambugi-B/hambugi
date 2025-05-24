@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/store_background"
+    android:orientation="vertical"
+
+    >
+
+    <!-- 상단 빈 공간 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- 상점 버튼 테이블 -->
+    <TableLayout
+        android:id="@+id/store_table"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
+
+        <TableRow>
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="waterbottle"
+                android:textSize="30sp"
+                android:textColor="#805000"
+                android:background="#f8efce"
+
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:gravity="center" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_waterbottle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:textSize="30sp"
+                android:textColor="#805000"
+                android:background="#f8efce"
+                android:backgroundTint="@null"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:gravity="center" />
+
+        </TableRow>
+
+        <TableRow>
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="curtain"
+                android:textSize="30sp"
+                android:textColor="#805000"
+                android:background="#f8efce"
+
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:gravity="center" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_curtain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50"
+                android:textSize="30sp"
+                android:textColor="#805000"
+                android:background="#f8efce"
+                android:backgroundTint="@null"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:gravity="center" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="doll"
+                android:textSize="30sp"
+                android:textColor="#805000"
+                android:background="#f8efce"
+
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:gravity="center" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_doll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:textSize="30sp"
+                android:textColor="#805000"
+                android:background="#f8efce"
+                android:backgroundTint="@null"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:gravity="center" />
+        </TableRow>
+    </TableLayout>
+
+    <!-- 하단 빈 공간 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- 완료 버튼 -->
+    <ImageButton
+        android:id="@+id/store_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="40dp"
+        android:background="@drawable/store_button" />
+</LinearLayout>
+
+
