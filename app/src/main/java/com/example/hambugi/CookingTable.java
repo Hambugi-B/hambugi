@@ -36,6 +36,7 @@ public class CookingTable extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_cookingtable);
+        context = this;
 
         txt_menubar_time = findViewById(R.id.txt_menubar_time);
         txt_menubar_gold = findViewById(R.id.txt_menubar_gold);
@@ -44,30 +45,32 @@ public class CookingTable extends Activity {
         btn_change_view = findViewById(R.id.btn_change_view);
         btn_menu = findViewById(R.id.btn_menubar_menu);
         burgerLayout = findViewById(R.id.layout_hamburger_stack);
-        context = this;
 
+        ImageButton btn_bun_top = findViewById(R.id.btn_bun_top);
+        ImageButton btn_patty = findViewById(R.id.btn_patty);
+        ImageButton btn_lettuce = findViewById(R.id.btn_lettuce);
+        ImageButton btn_cheese = findViewById(R.id.btn_cheese);
+        ImageButton btn_tomato = findViewById(R.id.btn_tomato);
+        ImageButton btn_bun_bottom = findViewById(R.id.btn_bun_bottom);
 
-        // Store에서 재료가 전달된 경우
-        String ingredientFromStore = getIntent().getStringExtra("ingredient");
-        if (ingredientFromStore != null) {
-            // 위쪽 빵 제거 후 재료 추가 → 다시 위빵 추가
-            if (!burgerStack.isEmpty() && burgerStack.peek().equals("bun_top")) {
-                burgerLayout.removeViewAt(burgerLayout.getChildCount() - 1);
-                burgerStack.pop();
-                stackIndex--;
-            }
+        // 해금 재료 리스트 가져오기
+        List<String> unlocked = GameManager.getInstance().getUnlockedIngredients();
 
-            addIngredient(ingredientFromStore);
-            addIngredient("bun_top");
-        }
+        // 해금 여부에 따른 버튼 상태 변경
+        applyUnlockState(btn_bun_top, "bun_top", unlocked);
+        applyUnlockState(btn_patty, "patty", unlocked);
+        applyUnlockState(btn_lettuce, "lettuce", unlocked);
+        applyUnlockState(btn_cheese, "cheese", unlocked);
+        applyUnlockState(btn_tomato, "tomato", unlocked);
+        applyUnlockState(btn_bun_bottom, "bun_bottom", unlocked);
 
         // 각 재료 추가 버튼 리스너
-        findViewById(R.id.btn_bun_top).setOnClickListener(v -> addIngredient("bun_top"));
-        findViewById(R.id.btn_patty).setOnClickListener(v -> addIngredient("patty"));
-        findViewById(R.id.btn_lettuce).setOnClickListener(v -> addIngredient("lettuce"));
-        findViewById(R.id.btn_cheese).setOnClickListener(v -> addIngredient("cheese"));
-        findViewById(R.id.btn_tomato).setOnClickListener(v -> addIngredient("tomato"));
-        findViewById(R.id.btn_bun_bottom).setOnClickListener(v -> addIngredient("bun_bottom"));
+        btn_bun_top.setOnClickListener(v -> addIngredient("bun_top"));
+        btn_patty.setOnClickListener(v -> addIngredient("patty"));
+        btn_lettuce.setOnClickListener(v -> addIngredient("lettuce"));
+        btn_cheese.setOnClickListener(v -> addIngredient("cheese"));
+        btn_tomato.setOnClickListener(v -> addIngredient("tomato"));
+        btn_bun_bottom.setOnClickListener(v -> addIngredient("bun_bottom"));
 
         // 화면 전환
         btn_change_view.setOnClickListener(v -> {
@@ -80,6 +83,17 @@ public class CookingTable extends Activity {
 
         // 햄버거 완성
         btn_complete.setOnClickListener(v -> completeBurger());
+    }
+
+    // 해금 여부에 따른 버튼 상태 변경 함수
+    private void applyUnlockState(ImageButton button, String ingredient, List<String> unlocked) {
+        if (unlocked.contains(ingredient)) {
+            button.setEnabled(true);
+            button.setVisibility(View.VISIBLE); // 보이게
+        } else {
+            button.setEnabled(false);
+            button.setVisibility(View.GONE); // 완전 숨김
+        }
     }
 
     // 재료를 스택에 추가하고 화면에 이미지로 표시

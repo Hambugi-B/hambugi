@@ -6,12 +6,12 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-public class Store2 extends AppCompatActivity {
+public class ArtifactStore extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_store_2);
+        setContentView(R.layout.view_artifact_store);
 
         AppCompatButton btnWater = findViewById(R.id.btn_waterbottle);
         AppCompatButton btnCurtain = findViewById(R.id.btn_curtain);
@@ -29,7 +29,7 @@ public class Store2 extends AppCompatActivity {
             }
 
             // 재료 정보를 CookingTable에 전달
-            Intent intent = new Intent(Store2.this, CookingTable.class);
+            Intent intent = new Intent(ArtifactStore.this, CookingTable.class);
             intent.putExtra("ingredient", ingredient);
             startActivity(intent);
         };

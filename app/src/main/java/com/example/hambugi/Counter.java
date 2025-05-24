@@ -23,9 +23,11 @@ import java.util.Random;
 public class Counter extends AppCompatActivity {
     private TextView txt_menubar_time, txt_menubar_gold, txt_order;
     private ImageButton btn_change_view, btn_menu;
+    private ProgressBar progressBar;
 
     private Handler handler = new Handler();
     private Runnable customerCheckRunnable;
+    private Runnable patienceRunnable;
     private final int checkInterval = 1000; // 손님 상태 확인 주기: 1초
 
     @Override
@@ -38,6 +40,7 @@ public class Counter extends AppCompatActivity {
         txt_order = findViewById(R.id.txt_order);
         btn_change_view = findViewById(R.id.btn_change_view);
         btn_menu = findViewById(R.id.btn_menubar_menu);
+        progressBar = findViewById(R.id.progress_patience);
 
         // 햄버거 제작 화면으로 이동
         btn_change_view.setOnClickListener(new View.OnClickListener() {
@@ -53,14 +56,7 @@ public class Counter extends AppCompatActivity {
         customerCheckRunnable = new Runnable() {
             @Override
             public void run() {
-                GameManager gm = GameManager.getInstance();
-
-                if (gm.isCustomerExpired()) {
-                    Toast.makeText(Counter.this, "Time Over", Toast.LENGTH_SHORT).show();
-                    gm.generateNewOrder();
-                    animateNewCustomer();
-                }
-
+                // 텍스트 갱신
                 updateOrderText();
                 handler.postDelayed(this, checkInterval);
             }
@@ -99,5 +95,43 @@ public class Counter extends AppCompatActivity {
             fadeIn.setDuration(300);
             txt_order.startAnimation(fadeIn);
         }, 200);
+
+        startProgressTimer();
+    }
+
+    // 인내심 프로그레스바 작동
+    private void startProgressTimer() {
+        final int maxTime = 10000;
+        final int interval = 100; // 0.1초마다 감소
+        final int[] elapsed = {0};
+
+        progressBar.setMax(100);
+        progressBar.setProgress(100);
+
+        patienceRunnable = new Runnable() {
+            @Override
+            public void run() {
+                elapsed[0] += interval;
+                int remaining = Math.max(0, maxTime - elapsed[0]);
+                int progress = (int)(((float) remaining / maxTime) * 100);
+                progressBar.setProgress(progress);
+
+                if(remaining > 0){
+                    handler.postDelayed(this, interval);
+                } else {
+                    customerLeaves();
+                }
+            }
+        };
+
+        handler.post(patienceRunnable);
+    }
+
+    private void customerLeaves() {
+        Toast.makeText(this, "손님이 떠났습니다!", Toast.LENGTH_SHORT).show();
+
+        handler.removeCallbacks(patienceRunnable); // 타이머 멈춤
+        GameManager.getInstance().generateNewOrder(); // 다음 손님
+        animateNewCustomer(); // 손님 등장 애니메이션
     }
 }
