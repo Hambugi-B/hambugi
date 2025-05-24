@@ -73,6 +73,16 @@
             android:textSize="14sp"
             android:textColor="@color/black"
             android:gravity="center"/>
+
+        <ProgressBar
+            android:id="@+id/progress_patience"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="200dp"
+            android:layout_height="10dp"
+            android:layout_gravity="top|center_horizontal"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/progress_timer_bg"/>
     </FrameLayout>
 
     <!-- 화면 전환 버튼(클릭 시 카운터 -> 쿠킹테이블) -->
