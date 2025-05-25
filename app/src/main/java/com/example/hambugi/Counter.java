@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Counter extends AppCompatActivity {
-    private TextView txt_menubar_time, txt_menubar_gold, txt_order;
-    private ImageButton btn_change_view, btn_menu;
+    private TextView txt_order;
+    private ImageButton btn_change_view;
     private ProgressBar progressBar;
 
     private Handler handler = new Handler();
@@ -34,12 +34,17 @@ public class Counter extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_counter);
-
-        txt_menubar_time = findViewById(R.id.txt_menubar_time);
-        txt_menubar_gold = findViewById(R.id.txt_menubar_gold);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.menubar_fragment_container, new MenuBarFragment())
+                    .commit();
+        }
+//        txt_menubar_time = findViewById(R.id.txt_menubar_time);
+//        txt_menubar_gold = findViewById(R.id.txt_menubar_gold);
         txt_order = findViewById(R.id.txt_order);
         btn_change_view = findViewById(R.id.btn_change_view);
-        btn_menu = findViewById(R.id.btn_menubar_menu);
+//        btn_menu = findViewById(R.id.btn_menubar_menu);
         progressBar = findViewById(R.id.progress_patience);
 
         // 햄버거 제작 화면으로 이동
