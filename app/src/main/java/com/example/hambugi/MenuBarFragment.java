@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -53,7 +54,8 @@ public class MenuBarFragment extends Fragment {
         gameClock = new CountDownTimer(millis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (isPaused) return;
+                if (GameManager.getInstance().isPaused()) return;  // 일시정지 중이면 아무것도 하지 않음
+
                 remainingMillis = millisUntilFinished;
 
                 int elapsed = (int) ((5 * 60 * 1000 - millisUntilFinished) / 1000);
@@ -70,7 +72,6 @@ public class MenuBarFragment extends Fragment {
                 String time = String.format(Locale.getDefault(), "%02d:%02d", currentHour, currentMinute);
                 txt_time.setText(time);
             }
-
             @Override
             public void onFinish() {
                 txt_time.setText("22:00");
@@ -90,21 +91,41 @@ public class MenuBarFragment extends Fragment {
         if (gameClock != null) gameClock.cancel();
     }
 
-    private void toggleMenuFragment() {
-        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+    private void toggleMenuFragment() { //손님보다 위에 보이게 수정
         Fragment existingFragment = getParentFragmentManager().findFragmentByTag("MENU_FRAGMENT");
 
         if (existingFragment != null && isMenuVisible) {
-            transaction.remove(existingFragment);
+            // DialogFragment는 dismiss()로 닫는다
+            ((DialogFragment) existingFragment).dismiss();
             isMenuVisible = false;
-            menu_container.setVisibility(View.GONE);
         } else {
-            Fragment menuFragment = new fragment_menu();
-            transaction.add(R.id.menu_container, menuFragment, "MENU_FRAGMENT");
+            // 새로 DialogFragment를 show()로 띄운다
+            fragment_menu menuDialog = new fragment_menu();
+            menuDialog.show(getParentFragmentManager(), "MENU_FRAGMENT");
             isMenuVisible = true;
-            menu_container.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void onTick(long millisUntilFinished) {
+        if (GameManager.getInstance().isPaused()) return;  // 일시정지 중이면 시간 업데이트 안 함
+
+        remainingMillis = millisUntilFinished;
+
+        int elapsed = (int) ((5 * 60 * 1000 - millisUntilFinished) / 1000);
+        int totalGameMinutes = (int) ((elapsed / 300.0) * (14 * 60));
+
+        currentHour = startHour + totalGameMinutes / 60;
+        currentMinute = totalGameMinutes % 60;
+
+        if (currentHour > 22) {
+            currentHour = 22;
+            currentMinute = 0;
         }
 
-        transaction.commit();
+        String time = String.format(Locale.getDefault(), "%02d:%02d", currentHour, currentMinute);
+        txt_time.setText(time);
     }
+
+
+
 }

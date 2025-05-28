@@ -27,7 +27,20 @@ public class GameManager {
         }
         return instance;
     }
+    //메뉴 뜨는 동안 시간 멈추기
+    private boolean isPaused = false;
 
+    public void pause() {
+        isPaused = true;
+    }
+
+    public void resume() {
+        isPaused = false;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
     // 스테이지 설정
     public void setStage(int stage) {
         this.currentStage = stage;
@@ -102,4 +115,8 @@ public class GameManager {
     public List<String> getUnlockedIngredients() {
         return unlockedIngredients;
     }
+
+
+
+
 }

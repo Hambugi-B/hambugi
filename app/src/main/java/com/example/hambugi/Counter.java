@@ -65,6 +65,8 @@ public class Counter extends AppCompatActivity {
                 updateOrderText();
                 handler.postDelayed(this, checkInterval);
             }
+
+
         };
 
         // 첫 손님 등장 애니메이션 및 텍스트 표시
@@ -116,12 +118,17 @@ public class Counter extends AppCompatActivity {
         patienceRunnable = new Runnable() {
             @Override
             public void run() {
+                if (GameManager.getInstance().isPaused()) {
+                    handler.postDelayed(this, interval);
+                    return;
+                }
+
                 elapsed[0] += interval;
                 int remaining = Math.max(0, maxTime - elapsed[0]);
                 int progress = (int)(((float) remaining / maxTime) * 100);
                 progressBar.setProgress(progress);
 
-                if(remaining > 0){
+                if (remaining > 0){
                     handler.postDelayed(this, interval);
                 } else {
                     customerLeaves();
