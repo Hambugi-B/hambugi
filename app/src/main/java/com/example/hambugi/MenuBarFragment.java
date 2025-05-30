@@ -25,7 +25,6 @@ public class MenuBarFragment extends Fragment {
     private int startHour = 8;
     private int currentHour = 8;
     private int currentMinute = 0;
-    private int currentGold = 0;
     private long remainingMillis = 5 * 60 * 1000;
     private boolean isPaused = false;
     private boolean isMenuVisible = false;
@@ -46,6 +45,8 @@ public class MenuBarFragment extends Fragment {
         startClock(remainingMillis);
 
         btn_menu.setOnClickListener(v -> toggleMenuFragment());
+
+        updateGoldText();
 
         return view;
     }
@@ -80,10 +81,6 @@ public class MenuBarFragment extends Fragment {
         gameClock.start();
     }
 
-    public void earnMoney(int amount) {
-        currentGold += amount;
-        txt_gold.setText("G:" + currentGold);
-    }
 
     @Override
     public void onDestroyView() {
@@ -125,7 +122,11 @@ public class MenuBarFragment extends Fragment {
         String time = String.format(Locale.getDefault(), "%02d:%02d", currentHour, currentMinute);
         txt_time.setText(time);
     }
-
-
+    //골드량을 표기
+    public void updateGoldText() {
+        if (txt_gold != null) {
+            txt_gold.setText("G: " + GameManager.getInstance().getGold());
+        }
+    }
 
 }
