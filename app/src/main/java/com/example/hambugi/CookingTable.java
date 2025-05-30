@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
-public class CookingTable extends Activity {
+public class CookingTable extends AppCompatActivity {
     private TextView txt_menubar_time, txt_menubar_gold;
     private ImageButton btn_delete, btn_complete, btn_change_view, btn_menu;
     private Stack<String> burgerStack = new Stack<>();
@@ -151,6 +152,14 @@ public class CookingTable extends Activity {
 
         if (matchIgnoringOrder(madeBurger, order)) {
             Toast.makeText(this, "Perfect Order!", Toast.LENGTH_SHORT).show();
+            // 골드 추가
+            GameManager.getInstance().addGold(100);
+            //표시는 메뉴 프래그먼트에서 담당
+            MenuBarFragment fragment = (MenuBarFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.menubar_fragment_container);
+            if (fragment != null) {
+                fragment.updateGoldText(); // 표시만
+            }
         } else {
             Toast.makeText(this, "Wrong Order!", Toast.LENGTH_SHORT).show();
         }

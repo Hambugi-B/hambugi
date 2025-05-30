@@ -1,5 +1,10 @@
 package com.example.hambugi;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,11 +19,30 @@ public class GameManager {
     private final long patienceLimit = 10000; // 손님의 인내심 지속 시간: 10초
     private int currentStage = 1; // 스테이지 단계
 
+    //메뉴 뜨는 동안 시간 멈추기
+    private boolean isPaused = false;
+
+    private int gold = 0 ;
+    private final FirebaseFirestore db;
+    private final String userId;
+
     // 해금된 재료 목록
     private List<String> unlockedIngredients = new ArrayList<>(Arrays.asList("bun_bottom", "bun_top", "patty", "lettuce"));
 
+
     private GameManager() {
-        generateNewOrder(); // 초기 손님 생성
+        generateNewOrder();
+
+        // Firebase 초기화
+        db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            userId = user.getUid();
+            loadGoldFromFirestore(); // 앱 시작 시 골드 불러오기
+        } else {
+            userId = "defaultUser"; // 로그인 실패 시 fallback
+        }
     }
 
     public static GameManager getInstance() {
@@ -27,8 +51,53 @@ public class GameManager {
         }
         return instance;
     }
-    //메뉴 뜨는 동안 시간 멈추기
-    private boolean isPaused = false;
+
+    // 골드 저장
+    public void setGold(int amount) {
+        this.gold = amount;
+        saveGoldToFirestore();
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public void addGold(int amount) {
+        setGold(this.gold + amount);
+    }
+
+    public void subtractGold(int amount) {
+        setGold(Math.max(0, this.gold - amount));
+    }
+    //db에 골드량을 저장
+    private void saveGoldToFirestore() {
+        DocumentReference docRef = db.collection("users").document(userId);
+        docRef.update("gold", gold)
+                .addOnFailureListener(e -> {
+                    docRef.set(new UserData(gold)); // 문서 없으면 새로 생성
+                });
+    }
+    //db에서 골드량을 불러옴
+    private void loadGoldFromFirestore() {
+        DocumentReference docRef = db.collection("users").document(userId);
+        docRef.get().addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                Long goldValue = doc.getLong("gold");
+                if (goldValue != null) {
+                    this.gold = goldValue.intValue();
+                }
+            }
+        });
+    }
+
+    // Firestore에 저장할 데이터 구조
+    public static class UserData {
+        public int gold;
+        public UserData() {}
+        public UserData(int gold) {
+            this.gold = gold;
+        }
+    }
 
     public void pause() {
         isPaused = true;
