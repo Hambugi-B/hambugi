@@ -19,59 +19,59 @@ public class MenuBarFragment extends Fragment {
     private ImageButton btn_menu;
     private FrameLayout menu_container;
 
-    // [추가] 게임 시간 계산용 상수
-    private static final int  START_HOUR        = 8;             // 08:00 시작
-    private static final long FULL_MILLIS       = 5 * 60 * 1000; // 실제 5분 = 게임 하루
-    private static final int  GAME_DAY_MINUTES  = 14 * 60;       // 게임 하루 = 14시간
+    /* 게임 시간 계산용 상수 */
+    private static final int  START_HOUR       = 8;              // 08:00
+    private static final long FULL_MILLIS      = 5 * 60 * 1000;  // 실제 5분 = 게임 하루
+    private static final int  GAME_DAY_MINUTES = 14 * 60;        // 게임 하루 = 14h
 
-    private int  currentHour   = START_HOUR;
-    private int  currentMinute = 0;
-    private long remainingMillis = FULL_MILLIS;
+    private int  currentHour;
+    private int  currentMinute;
+    private long remainingMillis;           // ★ GameManager에서 받아옴
 
     private boolean isMenuVisible = false;
-
-    // [추가] 타이머 일시정지 여부
-    private boolean isClockPaused = false;
-
-    // [추가] 일시정지 기능이 내장된 CountDownTimer
     private PausableCountDownTimer gameClock;
 
-    @Nullable
+    /* ─────────────────────────────── */
+
     @Override
-    public android.view.View onCreateView(@NonNull android.view.LayoutInflater inflater,
-                                          @Nullable android.view.ViewGroup container,
-                                          @Nullable Bundle savedInstanceState) {
+    public @NonNull android.view.View onCreateView(@NonNull android.view.LayoutInflater inflater,
+                                                   @Nullable android.view.ViewGroup container,
+                                                   @Nullable Bundle savedInstanceState) {
 
-        android.view.View view = inflater.inflate(R.layout.fragment_menubar, container, false);
+        android.view.View v = inflater.inflate(R.layout.fragment_menubar, container, false);
 
-        txt_time       = view.findViewById(R.id.txt_menubar_time);
-        txt_gold       = view.findViewById(R.id.txt_menubar_gold);
-        btn_menu       = view.findViewById(R.id.btn_menubar_menu);
-        menu_container = view.findViewById(R.id.menu_container);
+        txt_time = v.findViewById(R.id.txt_menubar_time);
+        txt_gold = v.findViewById(R.id.txt_menubar_gold);
+        btn_menu = v.findViewById(R.id.btn_menubar_menu);
+        menu_container = v.findViewById(R.id.menu_container);
 
         txt_gold.setText("G:0");
 
-        startClock(remainingMillis);               // 타이머 시작
-        btn_menu.setOnClickListener(v -> toggleMenuFragment());
-        updateGoldText();
+        /* ★ 저장돼 있던 남은 ms를 우선 사용 */
+        long stored = GameManager.getInstance().getRemainingMillis();
+        remainingMillis = (stored < 0) ? FULL_MILLIS : stored;
 
-        return view;
+        currentHour   = START_HOUR;
+        currentMinute = 0;
+
+        startClock(remainingMillis);
+        btn_menu.setOnClickListener(view -> toggleMenuFragment());
+        return v;
     }
 
-    // [추가] 일시정지·재개 지원 CountDownTimer 정의
+    /* ───────── 내부 CountDownTimer ───────── */
     private class PausableCountDownTimer extends CountDownTimer {
 
-        PausableCountDownTimer(long millisInFuture, long interval) {
-            super(millisInFuture, interval);
-            remainingMillis = millisInFuture;
+        PausableCountDownTimer(long millis, long step) {
+            super(millis, step);
+            remainingMillis = millis;
         }
 
-        @Override
-        public void onTick(long millisUntilFinished) {
+        @Override public void onTick(long millisUntilFinished) {
             remainingMillis = millisUntilFinished;
+            GameManager.getInstance().setRemainingMillis(remainingMillis);   // ★ 매 tick 저장
 
-            // [추가] 게임 전역 또는 개별 일시정지 모두 고려
-            if (isClockPaused || GameManager.getInstance().isPaused()) return;
+            if (GameManager.getInstance().isPaused()) return;                // 전역 일시정지
 
             int elapsedSec       = (int) ((FULL_MILLIS - millisUntilFinished) / 1000);
             int totalGameMinutes = (int) ((elapsedSec / 300.0) * GAME_DAY_MINUTES);
@@ -85,30 +85,27 @@ public class MenuBarFragment extends Fragment {
                     "%02d:%02d", currentHour, currentMinute));
         }
 
-        @Override
-        public void onFinish() {
-            txt_time.setText("22:00");
-        }
+        @Override public void onFinish() { txt_time.setText("22:00"); }
     }
 
-    private void startClock(long millis) {
-        gameClock = new PausableCountDownTimer(millis, 1000);
+    /* ───────── 타이머 제어 ───────── */
+    private void startClock(long ms) {
+        if (gameClock != null) gameClock.cancel();     // ★ 중복 방지
+        gameClock = new PausableCountDownTimer(ms, 1000);
         gameClock.start();
     }
 
-    // [추가] 타이머 일시정지
-    public void pauseClock() {
-        if (gameClock != null) {
-            gameClock.cancel();      // ★ 실제 스레드 정지
-            isClockPaused = true;
-        }
+    public void pauseClock() {                         // 메뉴 열 때 호출
+        if (gameClock != null) gameClock.cancel();
+        GameManager.getInstance().setPaused(true);         // ★
+        GameManager.getInstance().setRemainingMillis(remainingMillis); // ★
     }
 
-    // [추가] 타이머 재개
-    public void resumeClock() {
-        if (isClockPaused) {
-            startClock(remainingMillis); // ★ 멈춘 시점부터 다시 시작
-            isClockPaused = false;
+    public void resumeClock() {                        // 메뉴 닫을 때 호출
+        if (GameManager.getInstance().isPaused()) {
+            GameManager.getInstance().setPaused(false);    // ★
+            remainingMillis = GameManager.getInstance().getRemainingMillis();
+            startClock(remainingMillis);
         }
     }
 
@@ -116,32 +113,29 @@ public class MenuBarFragment extends Fragment {
         if (gameClock != null) gameClock.cancel();
     }
 
-    @Override
-    public void onDestroyView() {
+    @Override public void onDestroyView() {
         super.onDestroyView();
-        stopClock();                 // 화면 종료 시 타이머 정리
+        stopClock();
     }
 
+    /* ───────── 메뉴 DialogFragment 토글 ───────── */
     private void toggleMenuFragment() {
         Fragment existing = getParentFragmentManager().findFragmentByTag("MENU_FRAGMENT");
-
         if (existing != null && isMenuVisible) {
             ((DialogFragment) existing).dismiss();
             isMenuVisible = false;
-            // [추가] 메뉴 닫힘 → 타이머 재개
-            resumeClock();
+            resumeClock();                 // ★ 메뉴 닫힘 → 재개
         } else {
-            fragment_menu menuDialog = new fragment_menu();
-            menuDialog.show(getParentFragmentManager(), "MENU_FRAGMENT");
+            fragment_menu dlg = new fragment_menu();
+            dlg.show(getParentFragmentManager(), "MENU_FRAGMENT");
             isMenuVisible = true;
-            // [추가] 메뉴 열림 → 타이머 일시정지
-            pauseClock();
+            pauseClock();                  // ★ 메뉴 열림 → 일시정지
         }
     }
 
+    /* ───────── 골드 표시 업데이트 ───────── */
     public void updateGoldText() {
-        if (txt_gold != null) {
-            txt_gold.setText("G: " + GameManager.getInstance().getGold());
-        }
+        txt_gold.setText("G: " + GameManager.getInstance().getGold());
     }
 }
+
