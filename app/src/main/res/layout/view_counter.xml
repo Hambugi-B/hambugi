@@ -10,65 +10,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:name="com.example.hambugi.MenuBarFragment"/>
-    <!-- 상단 메뉴 바 -->
-<!--    <LinearLayout-->
-<!--        android:id="@+id/layout_menubar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="48dp"-->
-<!--        android:background="#ffffff"-->
-<!--        android:gravity="center"-->
-<!--        android:orientation="horizontal">-->
-
-<!--        &lt;!&ndash; 게임 내 시간(일정 시간 도달 시 게임 오버) &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/txt_menubar_time"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_marginRight="30dp"-->
-<!--            android:text="00 : 00"-->
-<!--            android:textSize="20dp"-->
-<!--            android:textAlignment="center"-->
-<!--            android:gravity="center"-->
-<!--            android:textColor="@color/black"/>-->
-
-<!--        &lt;!&ndash; 돈(햄버거 완성 시 재료 비용에 비례해 업데이트) &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/txt_menubar_gold"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:text="G: 100"-->
-<!--            android:textSize="20dp"-->
-<!--            android:textAlignment="center"-->
-<!--            android:gravity="center"-->
-<!--            android:textColor="@color/black"/>-->
-
-<!--        &lt;!&ndash; 메뉴 버튼(클릭 시 일시 정지 후 메뉴 출력) &ndash;&gt;-->
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_menubar_menu"-->
-<!--            android:layout_width="60dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:layout_marginLeft="50dp"-->
-<!--            android:layout_marginRight="30dp"-->
-<!--            android:background="@drawable/menu_button"/>-->
-
-<!--    </LinearLayout>-->
 
     <FrameLayout
         android:id="@+id/layout_customer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="103dp"
-        android:layout_marginLeft="30dp"
-
-        >
+        android:layout_marginLeft="30dp">
 
         <!-- 손님 이미지 -->
         <ImageView
             android:id="@+id/img_customer"
             android:layout_width="300dp"
             android:layout_height="350dp"
-            android:background="@drawable/customer"
-            />
+            android:background="@drawable/customer"/>
 
         <!-- 주문 텍스트 -->
         <TextView
