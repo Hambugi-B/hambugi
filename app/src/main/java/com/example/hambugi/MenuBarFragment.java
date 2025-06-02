@@ -40,7 +40,7 @@ public class MenuBarFragment extends Fragment {
         if (GameManager.getInstance().isGoldInitialized()) {
             updateGoldText();
         } else {
-            GameManager.getInstance().loadGoldAndNotify(this::updateGoldText);
+            GameManager.getInstance().loadGameDataAndNotify(this::updateGoldText);
         }
 
         btn_menu.setOnClickListener(view -> toggleMenuFragment());
