@@ -132,6 +132,7 @@ public class CookingTable extends AppCompatActivity {
         if (matchIgnoringOrder(madeBurger, order)) {
             Toast.makeText(this, "Perfect Order!", Toast.LENGTH_SHORT).show();
             int price = GameManager.getInstance().calculateBurgerPrice(madeBurger);
+            GameManager.getInstance().addScore();
             GameManager.getInstance().addGold(price);
         } else {
             Toast.makeText(this, "Wrong Order!", Toast.LENGTH_SHORT).show();
