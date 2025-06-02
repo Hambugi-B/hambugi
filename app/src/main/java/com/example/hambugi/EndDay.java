@@ -23,6 +23,7 @@ public class EndDay extends AppCompatActivity {
         int stage = GameManager.getInstance().getCurrentStage();
 
         if(stage >= 10) {
+            GameManager.getInstance().plusStage();
             txt_final_score.setVisibility(View.VISIBLE);
             txt_final_gold.setVisibility(View.VISIBLE);
 

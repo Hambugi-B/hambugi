@@ -7,105 +7,77 @@
     android:background="@drawable/store_background"
     android:orientation="vertical">
 
-    <!-- 상단 빈 공간 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
     <!-- 상점 버튼 테이블 -->
     <TableLayout
         android:id="@+id/store_table"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="400dp"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
+        android:layout_marginTop="200dp"
         android:orientation="horizontal">
 
         <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="waterbottle"
-                android:textSize="30sp"
-                android:textColor="#805000"
-                android:background="#f8efce"
-                android:layout_margin="10dp"
-                android:padding="10dp"
-                android:gravity="center" />
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:background="@drawable/artifact_flowerpot"
+                android:gravity="center"/>
 
             <Button
-                android:id="@+id/btn_waterbottle"
+                android:id="@+id/btn_flowerpot"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="100G"
+                android:layout_height="70dp"
+                android:text="150G"
                 android:textSize="30sp"
-                android:textColor="#805000"
-                android:background="#f8efce"
-                android:backgroundTint="@null"
-                android:layout_margin="10dp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="30dp"
+                android:layout_gravity="center"
                 android:padding="10dp"
-                android:gravity="center" />
+                android:gravity="center"/>
 
         </TableRow>
 
-        <TableRow>
-            <TextView
+        <TableRow
+            android:layout_marginTop="40dp">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="70dp"
+                android:background="@drawable/artifact_clock"
+                android:gravity="center"/>
+            <Button
+                android:id="@+id/btn_clock"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="curtain"
+                android:layout_height="70dp"
+                android:text="200G"
                 android:textSize="30sp"
-                android:textColor="#805000"
-                android:background="#f8efce"
-                android:layout_margin="10dp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="30dp"
+                android:layout_gravity="center"
                 android:padding="10dp"
-                android:gravity="center" />
+                android:gravity="center"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_marginTop="40dp">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="70dp"
+                android:background="@drawable/artifact_curtain"
+                android:gravity="center"/>
+
             <Button
                 android:id="@+id/btn_curtain"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="50"
+                android:layout_height="70dp"
+                android:text="250G"
                 android:textSize="30sp"
-                android:textColor="#805000"
-                android:background="#f8efce"
-                android:backgroundTint="@null"
-                android:layout_margin="10dp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="30dp"
+                android:layout_gravity="center"
                 android:padding="10dp"
-                android:gravity="center" />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="doll"
-                android:textSize="30sp"
-                android:textColor="#805000"
-                android:background="#f8efce"
-                android:layout_margin="10dp"
-                android:padding="10dp"
-                android:gravity="center" />
-
-            <Button
-                android:id="@+id/btn_doll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10"
-                android:textSize="30sp"
-                android:textColor="#805000"
-                android:background="#f8efce"
-                android:backgroundTint="@null"
-                android:layout_margin="10dp"
-                android:padding="10dp"
-                android:gravity="center" />
+                android:gravity="center"/>
         </TableRow>
     </TableLayout>
-
-    <!-- 하단 빈 공간 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 
     <!-- 나가기 버튼 -->
     <ImageButton

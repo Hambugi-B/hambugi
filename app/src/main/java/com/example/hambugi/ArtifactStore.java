@@ -23,14 +23,14 @@ public class ArtifactStore extends AppCompatActivity {
         ImageButton btn_exit = findViewById(R.id.btn_exit);
 
         // 아티팩트 ID → 버튼 ID 매핑
-        artifactButtonMap.put("waterbottle", R.id.btn_waterbottle);
+        artifactButtonMap.put("flowerpot", R.id.btn_flowerpot);
+        artifactButtonMap.put("clock", R.id.btn_clock);
         artifactButtonMap.put("curtain", R.id.btn_curtain);
-        artifactButtonMap.put("doll", R.id.btn_doll);
 
         // 아티팩트 ID → 표시이름 매핑
-        artifactDisplayName.put("waterbottle", "물병");
+        artifactDisplayName.put("flowerpot", "화분");
+        artifactDisplayName.put("clock", "시계");
         artifactDisplayName.put("curtain", "커튼");
-        artifactDisplayName.put("doll", "인형");
 
         for (String artifactId : artifactButtonMap.keySet()) {
             int buttonId = artifactButtonMap.get(artifactId);
@@ -43,7 +43,7 @@ public class ArtifactStore extends AppCompatActivity {
             }
 
             button.setOnClickListener(v -> {
-                GameManager.PurchaseResult result = GameManager.getInstance().purchaseArtifact(artifactId);
+                PurchaseResult result = GameManager.getInstance().purchaseArtifact(artifactId);
 
                 switch (result) {
                     case SUCCESS:

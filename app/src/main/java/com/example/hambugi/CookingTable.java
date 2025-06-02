@@ -139,6 +139,7 @@ public class CookingTable extends AppCompatActivity {
         }
 
         GameManager.getInstance().generateNewOrder();
+        GameManager.getInstance().setCurrentCustomerImageId(0);
         clearBurger();
 
         Intent intent = new Intent(CookingTable.this, Counter.class);

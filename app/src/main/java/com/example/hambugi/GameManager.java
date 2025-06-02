@@ -25,15 +25,17 @@ public class GameManager {
     private boolean isPatiencePaused = false;
     private long remainingPatienceWhenPaused = -1;
 
-    // 주문 관리
+    // 손님 & 주문 관리
     private List<String> currentOrder;
     private final List<String> unlockedIngredients = new ArrayList<>(
             Arrays.asList("bun_bottom", "bun_top", "patty", "lettuce")
     );
+    private int currentCustomerImageId = R.drawable.customer;
 
     // 스테이지 및 점수 관리
     private int currentStage = 1;
     private int score = 0;
+    private boolean isStageLoaded = false;
 
     // 골드 관리 (DB 포함)
     private int gold = 0;
@@ -45,17 +47,10 @@ public class GameManager {
     private final Map<String, Artifact> ownedArtifacts = new HashMap<>();
 
     private void initArtifacts() {
-        ownedArtifacts.put("waterbottle", new Artifact("waterbottle", "화분", 150, "인내심 +5%"));
-        ownedArtifacts.put("curtain", new Artifact("curtain", "커튼", 50, "피크타임 주문 감소"));
-        ownedArtifacts.put("doll", new Artifact("doll", "인형", 10, "보너스 점수 +5"));
+        ownedArtifacts.put("flowerpot", new Artifact("flowerpot", "화분", 150, "보너스 점수 +5%", ArtifactEffect.SCORE_BONUS, 0.05));
+        ownedArtifacts.put("clock", new Artifact("clock", "시계", 200, "인내심 +5%", ArtifactEffect.PATIENCE_BOOST, 0.05));
+        ownedArtifacts.put("curtain", new Artifact("curtain", "커튼", 250, "인내심 +10%", ArtifactEffect.PATIENCE_BOOST, 0.1));
     }
-
-    public enum PurchaseResult {
-        SUCCESS,
-        ALREADY_PURCHASED,
-        NOT_ENOUGH_GOLD
-    }
-
     private GameManager() {
         generateNewOrder();
 
@@ -68,7 +63,7 @@ public class GameManager {
                 // 여기선 초기화 중이니까 특별히 UI 갱신은 필요없음
             });
         } else {
-            userId = "defaultUser";
+            throw new IllegalStateException("로그인 유저 정보가 없습니다. 인증을 확인하세요.");
         }
 
         initArtifacts();
@@ -117,14 +112,12 @@ public class GameManager {
     }
 
     // -------- 인내심 관리 --------
-
     public void pausePatience() {
         if (!isPatiencePaused) {
             remainingPatienceWhenPaused = getRemainingPatience();
             isPatiencePaused = true;
         }
     }
-
     public void resumePatience() {
         if (isPatiencePaused) {
             customerStartTime = System.currentTimeMillis() - (patienceLimit - remainingPatienceWhenPaused);
@@ -132,35 +125,32 @@ public class GameManager {
             isPatiencePaused = false;
         }
     }
-
     public boolean isPatiencePaused() {
         return isPatiencePaused;
     }
-
     public long getCurrentPatienceLimit() {
-        long limit = Math.max(5000, 10000 - (currentStage - 1) * 5000);
+        double limit = Math.max(5000, 10000 - (currentStage - 1) * 1000);
 
         if (isPeakTime()) {
             limit *= 0.8; // 피크타임 시 인내심 20% 감소
         }
-        return limit;
-    }
 
+        limit = limit * getPatienceBonus();   // 아티팩트 보정
+        return (long) limit;
+    }
     public void resetCustomerTimer() {
         customerStartTime = System.currentTimeMillis();
         patienceLimit = getCurrentPatienceLimit();
     }
-
     public long getRemainingPatience() {
         long elapsed = System.currentTimeMillis() - customerStartTime;
         return Math.max(0, patienceLimit - elapsed);
     }
-
     public boolean isCustomerExpired() {
         return getRemainingPatience() <= 0;
     }
 
-    // -------- 주문 관리 --------
+    // -------- 손님 & 주문 관리 --------
     public void generateNewOrder() {
         List<String> unlockedToppings = new ArrayList<>(unlockedIngredients);
         unlockedToppings.remove("bun_bottom");
@@ -200,42 +190,41 @@ public class GameManager {
 
         resetCustomerTimer();
     }
-
     private int getExtraPattyCount(int stage) {
         Random rand = new Random();
         int extra = 0;
 
         // 스테이지별 추가 패티 확률
-        int chance = Math.min(80, 10 + stage * 7);  // 스테이지 10일떄 확률 80%
+        int chance = Math.min(60, 5 + stage * 5);  // 스테이지 10일떄 확률 80%
 
         if (rand.nextInt(100) < chance) extra++; // 1장 추가
         if (rand.nextInt(100) < chance / 2) extra++; // 50프로의 확률로 한번더
 
         return extra;
     }
-
-
     public List<String> getCurrentOrder() {
         return currentOrder;
     }
-
     public void serveCustomer() {
         generateNewOrder();
     }
-
     public void unlockIngredient(String ingredient) {
         if (!unlockedIngredients.contains(ingredient)) unlockedIngredients.add(ingredient);
     }
-
     public List<String> getUnlockedIngredients() {
         return unlockedIngredients;
+    }
+    public int getCurrentCustomerImageId() {
+        return currentCustomerImageId;
+    }
+    public void setCurrentCustomerImageId(int id){
+        currentCustomerImageId = id;
     }
 
     // -------- 스테이지 관리 --------
     public int getCurrentStage() {
         return currentStage;
     }
-
     public void nextStage() {
         currentStage++;
         resetGameTime();
@@ -244,14 +233,20 @@ public class GameManager {
         if (currentStage > 3) unlockIngredient("cheese");
         if (currentStage > 6) unlockIngredient("tomato");
 
+        patienceLimit = getCurrentPatienceLimit();
+
         saveGameDataToFirestore();
     }
-
     public void resetStage() {
         currentStage = 1;
         resetGameTime();
     }
-
+    public void plusStage() {
+        currentStage++;
+    }
+    public boolean isStageInitialized() {
+        return isStageLoaded;
+    }
     public void resetGameTime() {
         remainingMillis = FULL_MILLIS;
     }
@@ -266,7 +261,6 @@ public class GameManager {
     public void resetScore() {
         score = 0;
     }
-
     public void addScore() {
         int baseScore = 100;    // 기본 점수 100점
         int stageBonus = (currentStage - 1) * 10;  // 스테이지 보너스 점수
@@ -274,15 +268,14 @@ public class GameManager {
         double patienceRatio = (double) getRemainingPatience() / getCurrentPatienceLimit();
         double speedBonus = 1.0 + patienceRatio; // 남은 인내심별 보너스(최대 2배)
 
-        int earnedScore = (int) ((baseScore + stageBonus) * speedBonus);
+        double earnedScore = (baseScore + stageBonus) * speedBonus;
         if (isPeakTime()) {   // 피크타임이면 점수 1.2배
             earnedScore *= 1.2;
         }
-        score += earnedScore;
 
-        saveGameDataToFirestore();
+        earnedScore *= getScoreBonus();   // 아티팩트 보정
+        score += (int)earnedScore;
     }
-
     public int getScore() {
         return score;
     }
@@ -306,7 +299,6 @@ public class GameManager {
                     price = 2;
                     break;
             }
-            ;
             total += price;
         }
 
@@ -321,20 +313,15 @@ public class GameManager {
     public void resetGold() {
         gold = 0;
     }
-
     public void setGold(int amount) {
         this.gold = amount;
-        saveGameDataToFirestore();
     }
-
     public int getGold() {
         return gold;
     }
-
     public void addGold(int amount) {
         setGold(this.gold + amount);
     }
-
     public boolean isGoldInitialized() {
         return isGoldLoaded;
     }
@@ -348,12 +335,40 @@ public class GameManager {
 
         setGold(this.gold - artifact.getPrice());
         artifact.setPurchased(true);
+        saveGameDataToFirestore();
+
         return PurchaseResult.SUCCESS;
     }
-
     public boolean isPurchased(String id) {
         Artifact artifact = ownedArtifacts.get(id);
         return artifact != null && artifact.isPurchased();
+    }
+    public List<Artifact> getPurchasedArtifacts() {
+        List<Artifact> purchasedList = new ArrayList<>();
+        for (Artifact artifact : ownedArtifacts.values()) {
+            if (artifact.isPurchased()) {
+                purchasedList.add(artifact);
+            }
+        }
+        return purchasedList;
+    }
+    public double getPatienceBonus() {    // 인내심 보정
+        double bonus = 1.0;
+        for (Artifact artifact : ownedArtifacts.values()) {
+            if (artifact.isPurchased() && artifact.getEffect() == ArtifactEffect.PATIENCE_BOOST) {
+                bonus += artifact.getValue();
+            }
+        }
+        return bonus;
+    }
+    public double getScoreBonus() {   // 점수 보정
+        double bonus = 1.0;
+        for (Artifact artifact : ownedArtifacts.values()) {
+            if (artifact.isPurchased() && artifact.getEffect() == ArtifactEffect.SCORE_BONUS) {
+                bonus += artifact.getValue();
+            }
+        }
+        return bonus;
     }
 
     // ----------- DB 저장 관리 --------
@@ -370,7 +385,6 @@ public class GameManager {
                     Log.e("GameManager", "Firestore 저장 실패: " + e.getMessage(), e);
                 });
     }
-
     public void loadGameDataAndNotify(Runnable onComplete) {
         db.collection("users").document(userId).get().addOnSuccessListener(doc -> {
             if (doc.exists()) {
@@ -382,7 +396,8 @@ public class GameManager {
                 if (s != null) this.score = s.intValue();
                 if (st != null) this.currentStage = st.intValue();
             }
-            isGoldLoaded = true;  // 골드만 체크해도 초기화됐는지 확인 가능
+            isGoldLoaded = true;
+            isStageLoaded = true;
             if (onComplete != null) onComplete.run();
         }).addOnFailureListener(e -> {
             Log.e("Firestore", "게임 데이터 불러오기 실패", e);
@@ -397,12 +412,10 @@ public class GameManager {
 
         public UserData() {
         }
-
         public UserData(int gold, int score, int stage) {
             this.gold = gold;
             this.score = score;
             this.stage = stage;
         }
     }
-
 }
