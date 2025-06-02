@@ -24,6 +24,9 @@ public class Start extends Activity {
         btn_new_game.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GameManager.getInstance().resetScore();
+                GameManager.getInstance().resetStage();
+                GameManager.getInstance().resetGold();
                 Intent intent = new Intent(Start.this, Counter.class);
                 startActivity(intent);
             }
@@ -33,8 +36,10 @@ public class Start extends Activity {
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Start.this, Counter.class);
-                startActivity(intent);
+                GameManager.getInstance().loadGameDataAndNotify(() -> {
+                    Intent intent = new Intent(Start.this, Counter.class);
+                    startActivity(intent);
+                });
             }
         });
 
