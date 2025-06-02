@@ -1,6 +1,7 @@
 package com.example.hambugi;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.FrameLayout;
@@ -22,6 +23,7 @@ public class MenuBarFragment extends Fragment {
 
     private PausableCountDownTimer gameClock;
     private boolean isStageEnded = false;
+    private AnimationDrawable peakAnimation;
 
     @Override
     public @NonNull android.view.View onCreateView(@NonNull android.view.LayoutInflater inflater,
@@ -35,7 +37,11 @@ public class MenuBarFragment extends Fragment {
         btn_menu = v.findViewById(R.id.btn_menubar_menu);
         menu_container = v.findViewById(R.id.menu_container);
 
-        updateStageText();
+        if (GameManager.getInstance().isStageInitialized()) {
+            updateStageText();
+        } else {
+            GameManager.getInstance().loadGameDataAndNotify(this::updateStageText);
+        }
 
         if (GameManager.getInstance().isGoldInitialized()) {
             updateGoldText();
@@ -103,7 +109,7 @@ public class MenuBarFragment extends Fragment {
             }
 
             // 스테이지 종료 조건
-            if (hour >= 8 && minute == 8) {
+            if (hour == 22) {
                 isStageEnded = true;
                 endStage();
                 return;
@@ -111,6 +117,8 @@ public class MenuBarFragment extends Fragment {
 
             if(txt_time != null)
                 txt_time.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+
+            updatePeakEffect();
         }
 
         @Override
@@ -148,5 +156,28 @@ public class MenuBarFragment extends Fragment {
 
     public void updateGoldText() {
         txt_gold.setText("G: " + GameManager.getInstance().getGold());
+    }
+
+    private void updatePeakEffect() {
+        if (GameManager.getInstance().isPeakTime()) {
+            startPeakAnimation();
+        } else {
+            stopPeakAnimation();
+        }
+    }
+
+    private void startPeakAnimation() {
+        txt_time.setBackgroundResource(R.drawable.peak_fire);
+        txt_time.post(() -> {
+            peakAnimation = (AnimationDrawable) txt_time.getBackground();
+            peakAnimation.start();
+        });
+    }
+    private void stopPeakAnimation() {
+        if (peakAnimation != null) {
+            peakAnimation.stop();
+            peakAnimation = null;
+        }
+        txt_time.setBackground(null);
     }
 }

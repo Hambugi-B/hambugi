@@ -1,5 +1,7 @@
 package com.example.hambugi;
 
+import static androidx.core.util.TypedValueCompat.dpToPx;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,12 +42,28 @@ public class Counter extends AppCompatActivity {
         txt_order = findViewById(R.id.txt_order);
         btn_change_view = findViewById(R.id.btn_change_view);
         progressBar = findViewById(R.id.progress_patience);
+        LinearLayout artifactlayout = findViewById(R.id.layout_artifact_display);
 
         btn_change_view.setOnClickListener(v -> {
             Intent intent = new Intent(Counter.this, CookingTable.class);
             intent.putStringArrayListExtra("order", new ArrayList<>(GameManager.getInstance().getCurrentOrder()));
             startActivity(intent);
         });
+
+        List<Artifact> purchasedArtifacts = GameManager.getInstance().getPurchasedArtifacts();
+        for(Artifact artifact : purchasedArtifacts){
+            String id = artifact.getId();
+            int drawableResId = getArtifactDrawable(id);
+
+            ImageView artifactIcon = new ImageView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(25), dpToPx(25));
+            params.setMargins(dpToPx(4), 0, dpToPx(4), 0);
+            artifactIcon.setLayoutParams(params);
+            artifactIcon.setImageResource(drawableResId);
+
+            artifactlayout.addView(artifactIcon);
+
+        }
 
         updateOrderText();
         animateNewCustomer();
@@ -63,6 +81,24 @@ public class Counter extends AppCompatActivity {
         handler.removeCallbacks(patienceRunnable);
     }
 
+    private int getArtifactDrawable(String id){
+        switch (id){
+            case "flowerpot":
+                return R.drawable.artifact_flowerpot;
+            case "clock":
+                return R.drawable.artifact_clock;
+            case "curtain":
+                return R.drawable.artifact_curtain;
+            default:
+                return R.drawable.bun_bottom;
+        }
+    }
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+
     private void updateOrderText() {
         List<String> currentOrder = GameManager.getInstance().getCurrentOrder();
         String orderText = TextUtils.join(" > ", currentOrder);
@@ -72,6 +108,20 @@ public class Counter extends AppCompatActivity {
     private void animateNewCustomer() {
         txt_order.setVisibility(View.INVISIBLE);
         ImageView img_customer = findViewById(R.id.img_customer);
+
+        // 손님 이미지 결정: 새 손님인 경우만 랜덤 생성
+        if (GameManager.getInstance().getCurrentCustomerImageId() == 0) {
+            int[] customerImages = {
+                    R.drawable.customer,
+                    R.drawable.customer2
+            };
+            int randomIndex = (int)(Math.random() * customerImages.length);
+            int selectedImage = customerImages[randomIndex];
+            GameManager.getInstance().setCurrentCustomerImageId(selectedImage);
+        }
+
+        img_customer.setBackgroundResource(GameManager.getInstance().getCurrentCustomerImageId());
+
         Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.anim_customer_up);
         img_customer.startAnimation(slideUp);
 
@@ -115,6 +165,7 @@ public class Counter extends AppCompatActivity {
     private void customerLeaves() {
         Toast.makeText(this, "손님이 떠났습니다!", Toast.LENGTH_SHORT).show();
         GameManager.getInstance().serveCustomer();
+        GameManager.getInstance().setCurrentCustomerImageId(0);
         updateOrderText();
         animateNewCustomer();
         startPatienceTimer();
