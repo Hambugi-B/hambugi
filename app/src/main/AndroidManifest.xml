@@ -49,8 +49,6 @@
         </activity>
         <activity android:name=".CookingTable" />
         <activity android:name=".EndDay" />
-        <activity android:name=".SelectStore" />
-        <activity android:name=".IngredientStore" />
         <activity android:name=".ArtifactStore" />
     </application>
 

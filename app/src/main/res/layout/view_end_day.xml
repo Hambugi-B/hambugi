@@ -12,6 +12,27 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="330dp">
 
+        <TextView
+            android:id="@+id/txt_final_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Score: 0"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/txt_final_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Gold: 0"
+            android:textSize="30sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
         <!-- 다음 스테이지로 넘어가는 버튼(클릭 시 counter 화면으로 전환) -->
         <ImageButton
             android:id="@+id/btn_new_stage"
