@@ -379,11 +379,33 @@ public class GameManager {
         data.put("score", score);
         data.put("stage", currentStage);
 
+        Map<String, Boolean> artifactData = new HashMap<>();
+        for (Map.Entry<String, Artifact> entry : ownedArtifacts.entrySet()) {
+            artifactData.put(entry.getKey(), entry.getValue().isPurchased());
+        }
+        data.put("artifacts", artifactData);
+
         docRef.set(data, SetOptions.merge())
                 .addOnFailureListener(e -> {
                     // 실패 시 로그 처리
                     Log.e("GameManager", "Firestore 저장 실패: " + e.getMessage(), e);
                 });
+        docRef.get().addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                String nickname = doc.getString("username"); // username 필드에서 가져오기
+                if (nickname == null) nickname = "Unknown";
+
+                Map<String, Object> rankingData = new HashMap<>();
+                rankingData.put("score", score);
+                rankingData.put("nickname", nickname);
+
+                db.collection("rankings").document(userId)
+                        .set(rankingData, SetOptions.merge())
+                        .addOnFailureListener(e -> Log.e("GameManager", "랭킹 저장 실패: " + e.getMessage(), e));
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("GameManager", "닉네임 불러오기 실패", e);
+        });
     }
     public void loadGameDataAndNotify(Runnable onComplete) {
         db.collection("users").document(userId).get().addOnSuccessListener(doc -> {
@@ -395,6 +417,16 @@ public class GameManager {
                 if (g != null) this.gold = g.intValue();
                 if (s != null) this.score = s.intValue();
                 if (st != null) this.currentStage = st.intValue();
+
+                Map<String, Object> artifacts = (Map<String, Object>) doc.get("artifacts");
+                if (artifacts != null) {
+                    for (Map.Entry<String, Object> entry : artifacts.entrySet()) {
+                        Artifact a = ownedArtifacts.get(entry.getKey());
+                        if (a != null && entry.getValue() instanceof Boolean) {
+                            a.setPurchased((Boolean) entry.getValue());
+                        }
+                    }
+                }
             }
             isGoldLoaded = true;
             isStageLoaded = true;
@@ -409,13 +441,31 @@ public class GameManager {
         public int gold;
         public int score;
         public int stage;
+        public Map<String, Boolean> artifacts;
 
         public UserData() {
         }
-        public UserData(int gold, int score, int stage) {
+        public UserData(int gold, int score, int stage,Map<String, Boolean> artifacts) {
             this.gold = gold;
             this.score = score;
             this.stage = stage;
+            this.artifacts = artifacts;
         }
     }
+    public void resetUserDataInFirestore() {
+        // gold, score, stage 초기값
+        this.gold = 0;
+        this.score = 0;
+        this.currentStage = 1;
+        resetGameTime();
+
+        // artifacts 초기화 (모두 미구매로)
+        for (Artifact artifact : ownedArtifacts.values()) {
+            artifact.setPurchased(false);
+        }
+
+        // Firestore에 초기값 저장
+        saveGameDataToFirestore();
+    }
+
 }
