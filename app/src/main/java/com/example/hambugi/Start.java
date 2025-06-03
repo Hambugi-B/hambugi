@@ -25,9 +25,7 @@ public class Start extends AppCompatActivity {
         btn_new_game.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GameManager.getInstance().resetScore();
-                GameManager.getInstance().resetStage();
-                GameManager.getInstance().resetGold();
+                GameManager.getInstance().resetUserDataInFirestore();
                 Intent intent = new Intent(Start.this, Counter.class);
                 startActivity(intent);
             }
