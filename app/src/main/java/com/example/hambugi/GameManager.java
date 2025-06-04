@@ -458,9 +458,9 @@ public class GameManager {
     }
     public void resetUserDataInFirestore() {
         // gold, score, stage 초기값
-        this.gold = 500;
-        this.score = 500;
-        this.currentStage = 9;
+        this.gold = 0;
+        this.score = 0;
+        this.currentStage = 1;
         resetGameTime();
 
         // artifacts 초기화 (모두 미구매로)
