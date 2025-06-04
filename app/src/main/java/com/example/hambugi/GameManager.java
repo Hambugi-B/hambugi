@@ -261,6 +261,8 @@ public class GameManager {
     public void resetScore() {
         score = 0;
     }
+
+
     public void addScore() {
         int baseScore = 100;    // 기본 점수 100점
         int stageBonus = (currentStage - 1) * 10;  // 스테이지 보너스 점수
@@ -275,6 +277,8 @@ public class GameManager {
 
         earnedScore *= getScoreBonus();   // 아티팩트 보정
         score += (int)earnedScore;
+
+        saveGameDataToFirestore();
     }
     public int getScore() {
         return score;
@@ -454,9 +458,9 @@ public class GameManager {
     }
     public void resetUserDataInFirestore() {
         // gold, score, stage 초기값
-        this.gold = 0;
-        this.score = 0;
-        this.currentStage = 1;
+        this.gold = 500;
+        this.score = 500;
+        this.currentStage = 9;
         resetGameTime();
 
         // artifacts 초기화 (모두 미구매로)
